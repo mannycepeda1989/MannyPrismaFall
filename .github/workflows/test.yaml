@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: |
+  Manage Protegrity Transfer (SFTP) Users
+
+Parameters:
+
+  TransferServerId:
+    Type: String
+    Description: Transfer Server Id
+    ConstraintDescription: Valid Transfer Server Id e.g. s-xxxxxxxxxxxxxxxxx
+
+  TransferUserRole:
+    Type: String
+    Description: ARN of the Role used by Transfer Users
+    ConstraintDescription: Valid IAM Role ARN
+
+  TransferS3Bucket:
+    Type: String
+    Description: Transfer S3 Bucket
+    ConstraintDescription: Valid S3 Bucket Name
+
+  EnvType:
+    Description: Protegrity Environment Type
+    Type: String
+    Default: DEV
+    AllowedValues:
+      - DEV
+      - QA
+      - PROD
+    ConstraintDescription: Must be a valid Environment Type
+
+Mappings:
+  EnvironmentMap:
+    DEV:
+      dataConfidentialityTagValue: Confidential
+      assetClassificationTagValue: Low
+    QA:
+      dataConfidentialityTagValue: Confidential
+      assetClassificationTagValue: Medium
+    PROD:
+      dataConfidentialityTagValue: Confidential
+      assetClassificationTagValue: High
+
+Resources:
+  TierOneDevUser:
+    Type: 'AWS::Transfer::User'
+    Properties:
+      UserName: tierone-dev
+      HomeDirectoryType: LOGICAL
+      HomeDirectoryMappings:
+        - Entry: /
+          Target: !Sub
+            - "/${Bucket}/tierone-raw-zone-dev"
+            - { Bucket: !Ref TransferS3Bucket }
+      Role: !Ref TransferUserRole
+      ServerId: !Ref TransferServerId
+      Tags:
+        - Key: afl-created-by
+          Value: Security-Engineering-Automation
+        - Key: afl-supported-by
+          Value: dataprotectionprogram@aflac.com
+        - Key: afl-business-application-key
+          Value: Protegrity
+        - Key: afl-business-application-id
+          Value: 7702226
+        - Key: afl-security-data-confidentiality
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, dataConfidentialityTagValue ]
+        - Key: afl-security-asset-classification
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, assetClassificationTagValue ]
+      SshPublicKeys:
+        - >-
+          ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAhEm6Nit126hzzR+UGQFKf3rpF/9yKvXqnwig77hIH4vgstq6x3Og3Obh7LK2KfTNb/8oDgj/+2CPDc0Lj9iU+xHcMuUkm/eLx5Qcj1WhcYkRAB/U0QfGgJU2SbzqEZLNMATIZvgM+1tvq6VVfqdaVeRe9Sk0d7xuecKYL6IxVinUvlbB1IyHjVT2p0951aDpm8AOWCPxNKXekefaeGKw5P/7oIY1aReeh9dwe7UFgWwrDUrNr1fKXGDcxZ0Y5vY5CHIjoxRQWnJBgsYYkoPInUbRk2vqrbgHUxVjgDSL+QQwOOZLCtaqzNq7v5CACVDtRRKhYFcD7iWcFfSDoc5WMQ==
+  TierOneSystUser:
+    Type: 'AWS::Transfer::User'
+    Properties:
+      UserName: tierone-syst
+      HomeDirectoryType: LOGICAL
+      HomeDirectoryMappings:
+        - Entry: /
+          Target: !Sub
+            - "/${Bucket}/tierone-raw-zone-syst"
+            - { Bucket: !Ref TransferS3Bucket }
+      Role: !Ref TransferUserRole
+      ServerId: !Ref TransferServerId
+      Tags:
+        - Key: afl-created-by
+          Value: Security-Engineering-Automation
+        - Key: afl-supported-by
+          Value: dataprotectionprogram@aflac.com
+        - Key: afl-business-application-key
+          Value: Protegrity
+        - Key: afl-business-application-id
+          Value: 7702226
+        - Key: afl-security-data-confidentiality
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, dataConfidentialityTagValue ]
+        - Key: afl-security-asset-classification
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, assetClassificationTagValue ]
+      SshPublicKeys:
+        - >-
+          ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAwKMVWnLBQIqo1nGEDathIWDUt5Yc6HHEy/DBjJ7cpE4psq9MRGoiDQZdPFi9/jVDJf3M3H1NeGAZkJoTGcGhtG31lwoOzzv+7zg2lDmNlIjGvojTi5JcUHZIlXepsLNxtbUa406j2tWFzfErRAzZJXvgvLumj23sm5b6RJmShtK4+w9RbiqmmxJ8nIxMT0hI2n23EG8KYLFo463P97w1tvuKqaX00bqUlhoVQettm8SopHlHnn+hxrpJ64Cnh6ffI295LAQWHWs+pV72VnfXxTnjtoVoH/JgRwMDvklqWBSuhWe7S77qUnFK5JJwLMpOb7KnqPN9W8a2/VFMPKuAvw==
+  ActuarialTokenizeDevUser:
+    Type: 'AWS::Transfer::User'
+    Properties:
+      UserName: actuarial-tokenize-dev
+      HomeDirectoryType: LOGICAL
+      HomeDirectoryMappings:
+        - Entry: /
+          Target: !Sub
+            - "/${Bucket}/actuarial-tokenize-raw-zone-dev"
+            - { Bucket: !Ref TransferS3Bucket }
+      Role: !Ref TransferUserRole
+      ServerId: !Ref TransferServerId
+      Tags:
+        - Key: afl-created-by
+          Value: Security-Engineering-Automation
+        - Key: afl-supported-by
+          Value: dataprotectionprogram@aflac.com
+        - Key: afl-business-application-key
+          Value: Protegrity
+        - Key: afl-business-application-id
+          Value: 7702226
+        - Key: afl-security-data-confidentiality
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, dataConfidentialityTagValue ]
+        - Key: afl-security-asset-classification
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, assetClassificationTagValue ]
+      SshPublicKeys:
+        - >-
+          ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAgEAjN6ejrlzjzR2NDT78P+gpQPoHLvfFKs3qOXf4fQFpCYr4TSv9Zhuuzd0a/WxQIflG3hhHZZwl/gLtp1mhlgWsEOqf7N62Obna/OtUTyRPdarjomWAOSGXER66u2AgKjAxx7rmoO4C6mThjYVkKzu6iQOkaojpqOIDqsTCaK0Gj/wm89O8GOy5tVp47aP8szN8FM07px3UTr92SsxEFiXrH+wKFhdQ9rRGAl50+uE+pvW07irROVMnSacyyCkbIxYMz1oC+xcRXwolIglm8dJPnU1qNn0/C3fG/n8hQ2koDvw0PAsDR+ksYRVGDXWNTntlU1NW8dfjpNHou0fMrj3X/6RwSK9d3OAIiF1mWKiUeU1xy3EoCxvjKK2Qn4jQzZdQd/5IHe8wQKplPtBD9Wq3xABx9PlW85+tA/CSo3C6w6y14Y17chF9OC99T9Y2ujizEF/EDXwjbt+VzBDJb/ue13VHWEz4loxEjPgvdsI30sZq7Gmjcr2Gq1dvQhr4d/z5nVWesHSnUNomwLx1CQTigps5I3lL+5OSvdLKM+bW9At8uBC5f9/j1hk8JhFaxPCZts2jKPBwbsYfgKiFMOFJKWvE4xrf+zsZ1AdjgL54HGZUGEW8uDmxRspiVcrpB9/j7mQkDaQaw1s/D+zYsCZBAFyCdSLaI2OnzfJQVTc840=
+  ActuarialDetokenizeDevUser:
+    Type: 'AWS::Transfer::User'
+    Properties:
+      UserName: actuarial-detokenize-dev
+      HomeDirectoryType: LOGICAL
+      HomeDirectoryMappings:
+        - Entry: /
+          Target: !Sub
+            - "/${Bucket}/actuarial-detokenize-raw-zone-dev"
+            - { Bucket: !Ref TransferS3Bucket }
+      Role: !Ref TransferUserRole
+      ServerId: !Ref TransferServerId
+      Tags:
+        - Key: afl-created-by
+          Value: Security-Engineering-Automation
+        - Key: afl-supported-by
+          Value: dataprotectionprogram@aflac.com
+        - Key: afl-business-application-key
+          Value: Protegrity
+        - Key: afl-business-application-id
+          Value: 7702226
+        - Key: afl-security-data-confidentiality
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, dataConfidentialityTagValue ]
+        - Key: afl-security-asset-classification
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, assetClassificationTagValue ]
+      SshPublicKeys:
+        - >-
+          ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAgEAjcPZ3FmeReGJgkW4zrGyTt2QocrMdRjefWUFdFTv4LAJ2FpeeGcrJWIHLeTk3XBcUPC6EuVnqMGv7la/zPj4xF4Jizv71n7xIzWPt2WfHvCabOPoxSx78W1TI5R7UygXnx0KvIbHw3YNz6CcX+UCuOlz8qEV0VmifFgQud4X0QGB+6aMMftnFF5bcR5Rmt/8U7Edl7Cv/vs+0ACOpnCsjaZgoL7zg4S5q0DgLWrYpECVaEwUJx06XDxtaf6iDsqfCQtOotufRS5RyuIIkGZPRPh+wFcMheD8reiEJwsbA0+RM1oFH1ONWjWVs4oFS9Ybp/g+sFIxyCojHkEes+IBmhk8GDRh7XWrlHd5wdvBH9X0YbMEnPJXKbAnVUldnIrjgZdUoT0dvKDcJzd/U79VsNHPGo1w7SnHxkE6+hjSXBhV/Xoh3AmKEixJMdwW1CNZFRI0xW6WbmezW0jXw3ejvTDq3iZGG8WUzlRh/M9GKbXO8S261t+jiFc4DsKn9UC+ztDzDsbrow+z1pGIsas7M24mpH3FocksYQT4Wz0ahjV3tayhdZjO9gVvM67HBiDWZDu6bwSHdQQWKrUauRo3X2p5NfErKQWXdeJtEljCXtsTkt1U7gisPRt7PKCWG6yg2xfGTWyflJ2MtwmeDBKCBG8VXNv0CImxZJ4LacUfw2E=
+  InternalTestUser:
+    Type: 'AWS::Transfer::User'
+    Properties:
+      UserName: internal-test-user
+      HomeDirectoryType: LOGICAL
+      HomeDirectoryMappings:
+        - Entry: /
+          Target: !Sub
+            - "/${Bucket}/internal-test/incoming"
+            - { Bucket: !Ref TransferS3Bucket }
+      Role: !Ref TransferUserRole
+      ServerId: !Ref TransferServerId
+      Tags:
+        - Key: afl-created-by
+          Value: Security-Engineering-Automation
+        - Key: afl-supported-by
+          Value: dataprotectionprogram@aflac.com
+        - Key: afl-business-application-key
+          Value: Protegrity
+        - Key: afl-business-application-id
+          Value: 7702226
+        - Key: afl-security-data-confidentiality
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, dataConfidentialityTagValue ]
+        - Key: afl-security-asset-classification
+          Value: !FindInMap [ EnvironmentMap, !Ref EnvType, assetClassificationTagValue ]
+      SshPublicKeys:
+        - >-
+          ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAgkztBxPKhWblNnTUJu44AFc+YnWKrBU9GAr6Azt0xKGYANKnbVPH2c4eQ4mkUga6+FiRRENThGQUxGJ6IMB0Z94lZjqoyqPEkUAwuQCL3f3QIks2NSaNieECnpKane4yaszb75SKJwxqsxPZod4FA+iJ52ICGa3OPA39jOrow6uHb2a3CkcgYfX9AwTHYwyQ1/qEGDqzzdJKldru+bhrN7cPZTlGuwhvgoG/MKK73wBF9P1iHNwYk6kv3n65j4IU/8t/rK9e8/YnbOJQyh22GLUyyBjyhKwvdCOnOO8UIVW7HEMOGgG4FmO4vFLQmxSKThizQmJWtelQL9TbeNI3Pw==
