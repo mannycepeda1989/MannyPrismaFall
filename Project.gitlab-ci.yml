@@ -1,0 +1,26 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+
+stages:
+  - analyze
+
+#region Analyze Stage
+
+#region Prisma Cloud Checkov Scan
+checkov-scan:
+  stage: analyze
+  extends:
+    - .pcs_scan
+  variables:
+    CHECKOV_FRAMEWORK_OPTS: "-d . --framework sca_package dockerfile"
+
+include:
+  - project: 'btm/doc-gitlab/templates'
+    ref: main
+    file: 'gitlab-ci/Prisma-Cloud-Scan.gitlab-ci.yml'
+#endregion
+
+#endregion
